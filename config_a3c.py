@@ -27,7 +27,7 @@ class config_a:
     bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[None] + [None]
     bridge.strides =        [4]  +[2]+ [None] + [None]
     bridge.paddings =       ['SAME'] * 2+ [None] + [None]
-    bridge.activations =    [relu] * 2+ [None] + [relu]
+    bridge.activations =    [None] * 2+ [None] + [none]
     bridge.initializers =   [xaiver]*2+ [None] + [xaiver]
 
     mu_1 = Block()
@@ -88,7 +88,7 @@ class config_c:
     bridge.kernel_sizes =   [(8, 8)] + [(4, 4)] 
     bridge.strides =        [4]  + [2] 
     bridge.paddings =       ['SAME'] * 2
-    bridge.activations =    [relu] * 2
+    bridge.activations =    [None] * 2
     bridge.initializers =   [xaiver]*2
 
 
@@ -99,5 +99,5 @@ class config_c:
     value.kernel_sizes = [None] * 4
     value.strides = [None]*4
     value.paddings = [None]*4
-    value.activations = [None] + [relu] + [None]
+    value.activations = [None] + [None] + [None]
     value.initializers = [None] + [xaiver] * 2
