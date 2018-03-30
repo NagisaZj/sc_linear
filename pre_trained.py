@@ -17,7 +17,7 @@ import teacher
 import matplotlib.pyplot as plt
 
 supervise = 10.0
-MAX_GLOBAL_EP =30000 
+MAX_GLOBAL_EP =20000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
