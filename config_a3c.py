@@ -27,7 +27,7 @@ class config_a:
     bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[None] + [None]
     bridge.strides =        [4]  +[2]+ [None] + [None]
     bridge.paddings =       ['SAME'] * 2+ [None] + [None]
-    bridge.activations =    [None] * 2+ [None] + [none]
+    bridge.activations =    [None] * 2+ [None] + [None]
     bridge.initializers =   [xaiver]*2+ [None] + [xaiver]
 
     mu_1 = Block()
