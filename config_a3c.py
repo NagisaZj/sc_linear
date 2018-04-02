@@ -83,21 +83,21 @@ class config_c:
     tanh = tf.nn.tanh
 
     bridge = Block()
-    bridge.types =          ['conv'] * 2
-    bridge.filters =        [4]+ [8] 
-    bridge.kernel_sizes =   [(8, 8)] + [(4, 4)] 
-    bridge.strides =        [4]  + [2] 
-    bridge.paddings =       ['SAME'] * 2
-    bridge.activations =    [None] * 2
-    bridge.initializers =   [xaiver]*2
+    bridge.types =          ['conv'] * 2 + ['flat'] + ['dense']
+    bridge.filters =        [4]+ [8] +[None] + [64]
+    bridge.kernel_sizes =   [(8, 8)] + [(4, 4)]  + [None]*2
+    bridge.strides =        [4]  + [2] +[None] * 2
+    bridge.paddings =       ['SAME'] * 2+ [ None] *2
+    bridge.activations =    [None] * 4
+    bridge.initializers =   [xaiver]*4
 
 
 
     value = Block()
-    value.types = ['flat',  'dense', 'dense']
-    value.filters = [None, 64,  1]
-    value.kernel_sizes = [None] * 4
-    value.strides = [None]*4
-    value.paddings = [None]*4
-    value.activations = [None] + [None] + [None]
-    value.initializers = [None] + [xaiver] * 2
+    value.types = [ 'dense']
+    value.filters = [ 1]
+    value.kernel_sizes = [None] 
+    value.strides = [None]
+    value.paddings = [None]
+    value.activations = [None] 
+    value.initializers = [xaiver] 

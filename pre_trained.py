@@ -31,7 +31,7 @@ LR_A = 1e-4  # learning rate for actor
 LR_C = 1e-4  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
-N_WORKERS = 64 
+N_WORKERS = 1
 N_A = 2
 available_len = 524
 available_len_used = 2
@@ -201,7 +201,7 @@ class ACnet:
 
         with tf.variable_scope("critic") as scope:
             self.c_bridge = Util.block(self.s, self.config_c.bridge, "bridge")
-            self.value = Util.block(self.c_bridge, self.config_c.value, "value")
+            self.value = Util.block(self.a_bridge, self.config_c.value, "value")
 
 
 class Util:
