@@ -23,11 +23,11 @@ class config_a:
 
     bridge = Block()
     bridge.types =          ['conv'] * 2 +['flat']+['dense']
-    bridge.filters =        [4] + [8]  + [None] + [64]
+    bridge.filters =        [16] + [32]  + [None] + [64]
     bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[None] + [None]
     bridge.strides =        [4]  +[2]+ [None] + [None]
     bridge.paddings =       ['SAME'] * 2+ [None] + [None]
-    bridge.activations =    [None] * 2+ [None] + [None]
+    bridge.activations =    [relu] * 2+ [None] + [relu]
     bridge.initializers =   [xaiver]*2+ [None] + [xaiver]
 
     mu_1 = Block()
@@ -84,11 +84,11 @@ class config_c:
 
     bridge = Block()
     bridge.types =          ['conv'] * 2 + ['flat'] + ['dense']
-    bridge.filters =        [4]+ [8] +[None] + [64]
+    bridge.filters =        [16]+ [32] +[None] + [64]
     bridge.kernel_sizes =   [(8, 8)] + [(4, 4)]  + [None]*2
     bridge.strides =        [4]  + [2] +[None] * 2
     bridge.paddings =       ['SAME'] * 2+ [ None] *2
-    bridge.activations =    [None] * 4
+    bridge.activations =    [relu] * 2 +[None] +[relu]
     bridge.initializers =   [xaiver]*4
 
 
@@ -99,5 +99,5 @@ class config_c:
     value.kernel_sizes = [None] 
     value.strides = [None]
     value.paddings = [None]
-    value.activations = [None] 
+    value.activations = [relu] 
     value.initializers = [xaiver] 
