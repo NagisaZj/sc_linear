@@ -16,14 +16,14 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-supervise = 10.0
+supervise = 1.0
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
 scr_num = 5
 scr_bound = [0, scr_pixels - 1]
-entropy_gamma = -5
+entropy_gamma = -2
 steps = 40
 action_speed = 8
 reward_discount = GAMMA = 0.9
@@ -31,7 +31,7 @@ LR_A = 1e-4  # learning rate for actor
 LR_C = 1e-4  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
-N_WORKERS = 1
+N_WORKERS = 64
 N_A = 2
 available_len = 524
 available_len_used = 2
@@ -39,6 +39,7 @@ save_path = "/models"
 game = ["CollectMineralShards_2","CollectMineralShards_5","CollectMineralShards_10","CollectMineralShards_15","CollectMineralShards_20",]
 score_high = [6,15,25,35,1000]
 score_low = [-100,5,7,12,16]
+hards = 4
 #sigma_pow = 0.10
 class ACnet:
     def __init__(self, scope, globalAC=None,  config_a=None, config_c=None):
@@ -52,7 +53,7 @@ class ACnet:
                 self._build_net()
 
                # self.a_params = tl.layers.get_variables_with_name(scope + '/actor', True, False)
-                self.params = tl.layers.get_variables_with_name(scope + , True, False)
+                self.params = tl.layers.get_variables_with_name(scope  , True, False)
 
                 with tf.name_scope("choose_a"):  # choose actions,do not include a0 as a0 is discrete
                     mu_1, sigma_1 = self.mu_1 * scr_bound[1], self.sigma_1 + 1e-5
@@ -138,7 +139,7 @@ class ACnet:
 
             with tf.name_scope('local_grad'):
                # self.a_params = tl.layers.get_variables_with_name(scope + '/actor', True, False)
-                self.params = tl.layers.get_variables_with_name(scope + , True, False)
+                self.params = tl.layers.get_variables_with_name(scope , True, False)
                 self.a_grads = tf.gradients(self.a_loss, self.params)
                 self.c_grads = tf.gradients(self.c_loss, self.params)
 
@@ -178,11 +179,11 @@ class ACnet:
         # saver =  tf.train.Saver()
         # saver.save(sess,"model.ckpt")
         tl.files.exists_or_mkdir(self.scope)
-        tl.files.save_ckpt(sess=sess, mode_name='model.ckpt', var_list=self.a_params + self.c_params,
+        tl.files.save_ckpt(sess=sess, mode_name='model.ckpt', var_list=self.params,
                            save_dir=self.scope, printable=False)
 
     def load_ckpt(self):
-        tl.files.load_ckpt(sess=sess, var_list=self.a_params + self.c_params, save_dir=self.scope, printable=False)
+        tl.files.load_ckpt(sess=sess, var_list=self.params , save_dir=self.scope, printable=False)
         return
 
     def _build_net(self):
@@ -239,7 +240,7 @@ class Worker:
         self.AC = ACnet(name, globalAC,  config_a, config_c)
         globalAC.load_ckpt()
         self.AC.pull_global()
-        self.hard = 0
+        self.hard = hards
         self.env = wrap(game[self.hard])
 
     def pre_process(self, scr, mini, multi, available):

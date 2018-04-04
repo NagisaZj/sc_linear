@@ -48,8 +48,8 @@ class ACnet:
                 self.available=tf.placeholder(tf.float32,[None, available_len_used],"available_actions")
                 self._build_net()
 
-                self.a_params = tl.layers.get_variables_with_name(scope + '/actor', True, False)
-                self.c_params = tl.layers.get_variables_with_name(scope + '/critic', True, False)
+                self.params = tl.layers.get_variables_with_name(scope , True, False)
+                #self.c_params = tl.layers.get_variables_with_name(scope + '/critic', True, False)
 
                 with tf.name_scope("choose_a"):  #choose actions,do not include a0 as a0 is discrete
                     mu_1, sigma_1 = self.mu_1 * scr_bound[1], self.sigma_1 + 1e-5
@@ -124,18 +124,18 @@ class ACnet:
 
 
             with tf.name_scope('local_grad'):
-                self.a_params = tl.layers.get_variables_with_name(scope + '/actor', True, False)
-                self.c_params = tl.layers.get_variables_with_name(scope + '/critic', True, False)
-                self.a_grads = tf.gradients(self.a_loss, self.a_params)
-                self.c_grads = tf.gradients(self.c_loss, self.c_params)
+                self.params = tl.layers.get_variables_with_name(scope , True, False)
+                #self.c_params = tl.layers.get_variables_with_name(scope + '/critic', True, False)
+                self.a_grads = tf.gradients(self.a_loss, self.params)
+                self.c_grads = tf.gradients(self.c_loss, self.params)
 
             with tf.name_scope('sync'):
                 with tf.name_scope('pull'):
-                    self.pull_a_params_op = [l_p.assign(g_p) for l_p, g_p in zip(self.a_params, globalAC.a_params)]
-                    self.pull_c_params_op = [l_p.assign(g_p) for l_p, g_p in zip(self.c_params, globalAC.c_params)]
+                    self.pull_a_params_op = [l_p.assign(g_p) for l_p, g_p in zip(self.a_params, globalAC.params)]
+                    self.pull_c_params_op = [l_p.assign(g_p) for l_p, g_p in zip(self.c_params, globalAC.params)]
                 with tf.name_scope('push'):
-                    self.update_a_op = OPT_A.apply_gradients(zip(self.a_grads, globalAC.a_params))
-                    self.update_c_op = OPT_C.apply_gradients(zip(self.c_grads, globalAC.c_params))
+                    self.update_a_op = OPT_A.apply_gradients(zip(self.a_grads, globalAC.params))
+                    self.update_c_op = OPT_C.apply_gradients(zip(self.c_grads, globalAC.params))
         tl.layers.initialize_global_variables(sess)
 
 
@@ -174,10 +174,10 @@ class ACnet:
         #saver =  tf.train.Saver()
         #saver.save(sess,"model.ckpt")
         tl.files.exists_or_mkdir(self.scope)
-        tl.files.save_ckpt(sess=sess, mode_name='model.ckpt', var_list=self.a_params+self.c_params, save_dir=self.scope, printable=False)
+        tl.files.save_ckpt(sess=sess, mode_name='model.ckpt', var_list=self.params, save_dir=self.scope, printable=False)
 
     def load_ckpt(self):
-        tl.files.load_ckpt(sess=sess, var_list=self.a_params+self.c_params, save_dir=self.scope, printable=False)
+        tl.files.load_ckpt(sess=sess, var_list=self.params, save_dir=self.scope, printable=False)
         return
     def _build_net(self):
 
@@ -193,8 +193,8 @@ class ACnet:
             self.action = self.action / tf.reduce_sum(self.action, 1, keep_dims=True)
 
         with tf.variable_scope("critic") as scope:
-            self.c_bridge = Util.block(self.s, self.config_c.bridge, "bridge")
-            self.value = Util.block(self.c_bridge, self.config_c.value, "value")
+            #self.c_bridge = Util.block(self.s, self.config_c.bridge, "bridge")
+            self.value = Util.block(self.a_bridge, self.config_c.value, "value")
 
 
 

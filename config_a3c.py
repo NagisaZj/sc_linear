@@ -100,4 +100,4 @@ class config_c:
     value.strides = [None]
     value.paddings = [None]
     value.activations = [relu] 
-    value.initializers = [xaiver] 
+    value.initializers = [None] 
