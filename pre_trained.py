@@ -16,7 +16,7 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-supervise = 1.0
+supervise = 3.0
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
@@ -38,7 +38,7 @@ available_len_used = 2
 save_path = "/models"
 game = ["CollectMineralShards_2","CollectMineralShards_5","CollectMineralShards_10","CollectMineralShards_15","CollectMineralShards_20",]
 score_high = [6,15,25,35,1000]
-score_low = [-100,5,7,12,16]
+score_low = [-100,5,7,12,-100]
 hards = 4
 #sigma_pow = 0.10
 class ACnet:

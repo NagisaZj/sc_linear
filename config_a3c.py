@@ -23,7 +23,7 @@ class config_a:
 
     bridge = Block()
     bridge.types =          ['conv'] * 2 +['flat']+['dense']
-    bridge.filters =        [16] + [32]  + [None] + [64]
+    bridge.filters =        [16] + [32]  + [None] + [256]
     bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[None] + [None]
     bridge.strides =        [4]  +[2]+ [None] + [None]
     bridge.paddings =       ['SAME'] * 2+ [None] + [None]
