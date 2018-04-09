@@ -94,10 +94,10 @@ class config_c:
 
 
     value = Block()
-    value.types = [ 'dense']
-    value.filters = [ 1]
-    value.kernel_sizes = [None] 
-    value.strides = [None]
-    value.paddings = [None]
-    value.activations = [relu] 
-    value.initializers = [None] 
+    value.types = [ 'dense']*2
+    value.filters = [64,1]
+    value.kernel_sizes = [None] *2
+    value.strides = [None]*2
+    value.paddings = [None]*2
+    value.activations = [relu] + [None] 
+    value.initializers = [None] *2
