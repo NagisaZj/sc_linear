@@ -16,19 +16,19 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-supervise = 3
+supervise = 4
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
 scr_num = 5
 scr_bound = [0, scr_pixels - 1]
-entropy_gamma = -0.2
+entropy_gamma = -1
 steps = 40
 action_speed = 8
 reward_discount = GAMMA = 0.9
-LR_A = 3e-4  # learning rate for actor
-LR_C = 3e-5  # learning rate for critic
+LR_A = 3e-5  # learning rate for actor
+LR_C = 3e-4  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
 N_WORKERS = 64
