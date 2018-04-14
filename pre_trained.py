@@ -16,14 +16,15 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-supervise = 7.0
+weight_td = 0.1
+supervise = 50.0
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
 scr_num = 5
 scr_bound = [0, scr_pixels - 1]
-entropy_gamma = -15.0
+entropy_gamma = -50.0
 steps = 1
 reward_discount = GAMMA = 0.9
 LR_A = 7e-5  # learning rate for actor
@@ -110,8 +111,8 @@ class ACnet:
                         log_prob[i,0]=log_prob0[i,0]
                 '''
                 log_prob = log_prob0 + log_prob1 + log_prob2 
-
-                exp_v = log_prob * td
+                self.log_prob_a = tf.reduce_mean(log_prob)
+                exp_v = log_prob * td * weight_td
 
                 entropy0 = -tf.reduce_sum(self.action * tf.log(self.action + 1e-5),
                                           axis=1, keep_dims=True)
@@ -396,7 +397,7 @@ class Worker:
                     #closs ,aloss,exp_loss= sess.run([self.AC.c_loss,self.AC.a_loss,self.AC.exp_loss], feed_dict=feed_dict)
                     #print("c_loss:",closs,"a_loss:",aloss,"exp_loss",exp_loss)
                     #sigma_1,sigma_2 = sess.run([self.AC.sigma_1,self.AC.sigma_2],feed_dict = feed_dict)
-                    entropy,aloss,td,exp_loss = sess.run([self.AC.entropy,self.AC.a_loss,self.AC.td,self.AC.exp_loss],feed_dict = feed_dict)
+                    entropy,aloss,td,exp_loss,prob_a = sess.run([self.AC.entropy,self.AC.a_loss,self.AC.td,self.AC.exp_loss,self.AC.log_prob_a],feed_dict = feed_dict)
                     
                     buffer_s, buffer_a0, buffer_a1, buffer_a2, buffer_r, buffer_avail = [], [], [], [], [], []
                     buffer_a0_exp,buffer_a1_exp,buffer_a2_exp = [],[],[]
@@ -416,7 +417,7 @@ class Worker:
                         # '| sigma:', test, # debug
                     )
                     GLOBAL_EP += 1
-                    print("entropy",entropy[0][0],"td",td[0],"exp_loss",exp_loss,"aloss",aloss)
+                    print("entropy",entropy[0][0],"td",td[0],"prob_a:",prob_a,"prob_exp:",exp_loss,"aloss",aloss)
                     # self.globalAC.save_ckpt()
                     # with open("/summary.txt",'w') as f:
                     #    f.write('%.lf' % ep_r)
