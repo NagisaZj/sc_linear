@@ -16,19 +16,18 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-supervise = 6
+supervise = 7
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
 scr_num = 5
 scr_bound = [0, scr_pixels - 1]
-entropy_gamma = -3
-steps = 40
-action_speed = 8
+entropy_gamma = -2
+steps = 3
 reward_discount = GAMMA = 0.9
-LR_A = 3e-5  # learning rate for actor
-LR_C = 3e-4  # learning rate for critic
+LR_A = 7e-5  # learning rate for actor
+LR_C = 1e-4  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
 N_WORKERS = 64
@@ -37,9 +36,11 @@ available_len = 524
 available_len_used = 2
 save_path = "/models"
 game = ["CollectMineralShards_2","CollectMineralShards_5","CollectMineralShards_10","CollectMineralShards_15","CollectMineralShards_20",]
-score_high = [6,15,25,35,1000]
+score_high = [6,15,25,35,1e9]
 score_low = [-100,5,7,12,-100]
 hards = 4
+varience = None
+weight = 0.2
 #sigma_pow = 0.10
 class ACnet:
     def __init__(self, scope, globalAC=None,  config_a=None, config_c=None):
@@ -89,8 +90,8 @@ class ACnet:
                 mu_1, sigma_1 = self.mu_1 * scr_bound[1], self.sigma_1 + 1e-5
                 mu_2, sigma_2 = self.mu_2 * scr_bound[1], self.sigma_2 + 1e-5
 
-            normal_dist_1 = tf.contrib.distributions.Normal(mu_1, sigma_1)
-            normal_dist_2 = tf.contrib.distributions.Normal(mu_2, sigma_2)
+            normal_dist_1 = tf.contrib.distributions.Normal(mu_1,varience if varience is not None else sigma_1)
+            normal_dist_2 = tf.contrib.distributions.Normal(mu_2,varience if varience is not None else sigma_2)
 
             with tf.name_scope("a_loss"):  # build loss function
                 #self.sigma_loss = tf.reduce_mean(tf.square(self.sigma_1)+tf.square(self.sigma_2))
@@ -361,7 +362,8 @@ class Worker:
                 buffer_a1_exp.append(a1_exp)
                 buffer_a2_exp.append(a2_exp)
                 state, reward, done, info = self.env.step(action)
-
+                if reward > 0:
+                    reward = reward * (1+ep_r*weight)
                 buffer_r.append(reward)
                 ep_r += reward
                 if total_step % UPDATE_GLOBAL_ITER == 0 or done:
@@ -486,8 +488,8 @@ def main(unused_argv):
     GLOBAL_AC.save_ckpt()
     #plt.plot(GLOBAL_RUNNING_R)
     #plt.show()
-    plt.plot(GLOBAL_RUNNING_R)
-    plt.savefig("a.jpg")
+    #plt.plot(GLOBAL_RUNNING_R)
+    #plt.savefig("a.jpg")
     reward = np.array(GLOBAL_RUNNING_R,dtype = np.float32)
     reward.tofile("aa.bin")
 
