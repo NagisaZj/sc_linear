@@ -16,7 +16,7 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-weight_td = 0.1
+weight_td = 1e-5
 supervise = 50.0
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
@@ -24,14 +24,14 @@ UPDATE_GLOBAL_ITER = 40
 scr_pixels = 64
 scr_num = 5
 scr_bound = [0, scr_pixels - 1]
-entropy_gamma = -50.0
-steps = 1
+entropy_gamma = -1e-5
+steps = 5
 reward_discount = GAMMA = 0.9
-LR_A = 7e-5  # learning rate for actor
-LR_C = 1e-4  # learning rate for critic
+LR_A = 1e-4  # learning rate for actor
+LR_C = 1e-9  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
-N_WORKERS = 64
+N_WORKERS =1
 N_A = 2
 available_len = 524
 available_len_used = 2
@@ -40,7 +40,7 @@ game = ["CollectMineralShards_2","CollectMineralShards_5","CollectMineralShards_
 score_high = [10000,15,25,35,1e4]
 score_low = [-100,5,7,12,-100]
 hards = 4
-varience = None
+varience =1.0# None
 weight = 0.2
 #sigma_pow = 0.10
 class ACnet:
