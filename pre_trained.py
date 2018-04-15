@@ -16,8 +16,8 @@ from sc2_util import FLAGS, flags
 import teacher
 import matplotlib.pyplot as plt
 
-weight_td = 1e-5
-supervise = 50.0
+weight_td = -1e-5
+supervise = 10.0
 MAX_GLOBAL_EP =30000 
 GLOBAL_NET_SCOPE = "Global_Net"
 UPDATE_GLOBAL_ITER = 40
@@ -28,19 +28,19 @@ entropy_gamma = -1e-5
 steps = 5
 reward_discount = GAMMA = 0.9
 LR_A = 1e-4  # learning rate for actor
-LR_C = 1e-9  # learning rate for critic
+LR_C = 1e-6  # learning rate for critic
 GLOBAL_RUNNING_R = []
 GLOBAL_EP = 0
-N_WORKERS =1
+N_WORKERS =64
 N_A = 2
 available_len = 524
 available_len_used = 2
 save_path = "/models"
 game = ["CollectMineralShards_2","CollectMineralShards_5","CollectMineralShards_10","CollectMineralShards_15","CollectMineralShards_20",]
-score_high = [10000,15,25,35,1e4]
+score_high = [10000,15,25,35,1e8]
 score_low = [-100,5,7,12,-100]
 hards = 4
-varience =1.0# None
+varience =2.0# None
 weight = 0.2
 #sigma_pow = 0.10
 class ACnet:
@@ -349,11 +349,12 @@ class Worker:
         while not COORD.should_stop() and GLOBAL_EP < MAX_GLOBAL_EP:
             state, _, _, info = self.env.reset()  # timestep[0] contains rewards, observations, etc. SEE pysc2 FOR MORE INFO
             ep_r = 0
+            lei_ji = 0
             while True:
                 a0,a1,a2 = self.AC.choose_action([state],[info])
                 a0_exp, a1_exp, a2_exp = teacher.action(state, info)
                 # print(state)
-                action = 1 if a0 == 0 else int(2 + a1 * scr_pixels + a2)
+                action = 1 if a0 == 0 else int(2 + a1_exp * scr_pixels + a2_exp)
                 buffer_s.append([state])
                 buffer_avail.append([info])
                 buffer_a0.append(a0)
@@ -363,6 +364,9 @@ class Worker:
                 buffer_a1_exp.append(a1_exp)
                 buffer_a2_exp.append(a2_exp)
                 state, reward, done, info = self.env.step(action)
+                lei_ji += reward
+                if lei_ji >=20:
+                    done = True
                 if reward > 0:
                     reward = reward * (1+ep_r*weight)
                 buffer_r.append(reward)
@@ -412,7 +416,7 @@ class Worker:
                     print(
                         self.name,
                         "episode:", GLOBAL_EP,
-                        '| reward: %.1f' % ep_r,
+                        '| reward: %.1f' % lei_ji,
                         "| running_reward: %.1f" % GLOBAL_RUNNING_R[-1],
                         # '| sigma:', test, # debug
                     )
