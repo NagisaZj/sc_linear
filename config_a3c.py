@@ -22,13 +22,13 @@ class config_a:
     sigmoid = tf.nn.sigmoid
 
     bridge = Block()
-    bridge.types =          ['conv'] * 2 +['flat']+['dense']
-    bridge.filters =        [16] + [32]  + [None] + [256]
-    bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[None] + [None]
-    bridge.strides =        [4]  +[2]+ [None] + [None]
-    bridge.paddings =       ['SAME'] * 2+ [None] + [None]
-    bridge.activations =    [relu] * 2+ [None] + [relu]
-    bridge.initializers =   [xaiver]*2+ [None] + [xaiver]
+    bridge.types =          ['conv'] * 4 +['flat']+['dense']
+    bridge.filters =        [16] + [32] +[32,16] + [None] + [256]
+    bridge.kernel_sizes =   [(8, 8)] + [(4,4)]+[(2,2),(1,1)]+[None] + [None]
+    bridge.strides =        [4]  +[2]+[1,1]+ [None] + [None]
+    bridge.paddings =       ['SAME'] * 4+ [None] + [None]
+    bridge.activations =    [relu] * 4+ [None] + [relu]
+    bridge.initializers =   [xaiver]*4+ [None] + [xaiver]
 
     mu_1 = Block()
     mu_1.types = ['dense']
@@ -83,13 +83,13 @@ class config_c:
     tanh = tf.nn.tanh
 
     bridge = Block()
-    bridge.types =          ['conv'] * 2 + ['flat'] + ['dense']
-    bridge.filters =        [16]+ [32] +[None] + [64]
-    bridge.kernel_sizes =   [(8, 8)] + [(4, 4)]  + [None]*2
-    bridge.strides =        [4]  + [2] +[None] * 2
-    bridge.paddings =       ['SAME'] * 2+ [ None] *2
-    bridge.activations =    [relu] * 2 +[None] +[relu]
-    bridge.initializers =   [xaiver]*4
+    bridge.types = ['conv'] * 4 + ['flat'] + ['dense']
+    bridge.filters = [16] + [32] + [32, 16] + [None] + [256]
+    bridge.kernel_sizes = [(8, 8)] + [(4, 4)] + [(2, 2), (1, 1)] + [None] + [None]
+    bridge.strides = [4] + [2] + [1, 1] + [None] + [None]
+    bridge.paddings = ['SAME'] * 4 + [None] + [None]
+    bridge.activations = [relu] * 4 + [None] + [relu]
+    bridge.initializers = [xaiver] * 4 + [None] + [xaiver]
 
 
 
