@@ -22,7 +22,7 @@ flags.DEFINE_integer("minimap_resolution", 64,
                      "Resolution for minimap feature layers.")
 flags.DEFINE_integer("max_agent_steps", 2500, "Total agent steps.")
 flags.DEFINE_integer("game_steps_per_episode", 0, "Game steps per episode.")
-flags.DEFINE_integer("step_mul", 100, "Game steps per agent step.")
+flags.DEFINE_integer("step_mul", 8, "Game steps per agent step.")
 flags.DEFINE_bool("save_replay", False, "Whether to save a replay at the end.")
 flags.DEFINE_float("action_cost", 1e-3, "What does it take to make an action")
 flags.DEFINE_float("time_cost", 0, "each time step cost certain value")
@@ -91,6 +91,9 @@ class scenv:
                 axis=2)
         reward = obs.reward
         done = obs.last()
+        mineral_y,mineral_x = (feature==3).nonzero()
+        if not mineral_y.any()or not mineral_x.any()  :
+            done = True
         self.info = np.array([a1,a2])
 
         self.history = (f1, f2)

@@ -35,7 +35,7 @@ available_len = 524
 available_len_used = 2
 save_path = "/models"
 game = "CollectMineralShards_20"
-
+varience = 1.0
 class ACnet:
     def __init__(self,scope,globalAC=None,config_a=None, config_c=None):
         self.scope=scope
@@ -77,8 +77,8 @@ class ACnet:
                 mu_1, sigma_1 = self.mu_1 * scr_bound[1], self.sigma_1 + 1e-5
                 mu_2, sigma_2 = self.mu_2 * scr_bound[1], self.sigma_2 + 1e-5
 
-            normal_dist_1 = tf.contrib.distributions.Normal(mu_1, sigma_1)
-            normal_dist_2 = tf.contrib.distributions.Normal(mu_2, sigma_2)
+            normal_dist_1 = tf.contrib.distributions.Normal(mu_1, sigma_1 if varience is None else varience)
+            normal_dist_2 = tf.contrib.distributions.Normal(mu_2, sigma_2 if vairence is None else varience)
 
             with tf.name_scope("a_loss"):    #build loss function
                 log_prob0=tf.reduce_sum(tf.log(self.action) * tf.one_hot(self.a0, N_A, dtype=tf.float32), axis=1,
